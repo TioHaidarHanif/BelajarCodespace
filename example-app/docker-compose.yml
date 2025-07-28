@@ -1,0 +1,41 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # --- 1. Nginx Web Server ---
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80" # Map port 80 di host ke port 80 di kontainer Nginx
+    volumes:
+      - .:/var/www/html # <--- PENTING: Mount SELURUH proyek Laravel Anda
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+
+  # --- 2. PHP-FPM (Laravel Application) ---
+  php:
+    build:
+      context: . # Konteks build adalah direktori root proyek Laravel
+      dockerfile: docker/php/Dockerfile # Menggunakan Dockerfile PHP kustom
+    volumes:
+      - .:/var/www/html # <--- PENTING: Mount SELURUH proyek Laravel Anda
+    expose:
+      - 9000
+    working_dir: /var/www/html # <--- PENTING: Atur working directory di kontainer
+
+  # --- 3. MySQL Database ---
+  mysql:
+    image: mysql:8.0 # Anda bisa sesuaikan versi MySQL-nya
+    ports:
+      - "3306:3306" # Opsional: Untuk akses dari luar kontainer
+    environment:
+      MYSQL_ROOT_PASSWORD: your_root_password # **GANTI DENGAN SANDI KUAT!**
+      MYSQL_DATABASE: your_laravel_db # **GANTI DENGAN NAMA DATABASE PROYEK ANDA!**
+      MYSQL_USER: your_db_user # **GANTI!**
+      MYSQL_PASSWORD: your_db_password # **GANTI!**
+    volumes:
+      - db_data:/var/lib/mysql # Volume persisten untuk data database
+
+volumes:
+  db_data: # Definisi volume bernama untuk data MySQL

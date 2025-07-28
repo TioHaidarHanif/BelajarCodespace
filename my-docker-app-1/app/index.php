@@ -12,7 +12,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
-echo "<h1>Halo dari Aplikasi Dokter!</h1>";
+echo "<h1>Halo dari Aplikasi Docker!</h1>";
 echo "<p>Koneksi ke database MySQL berhasil!</p>";
 
 // Contoh query sederhana (opsional, jika Anda ingin benar-benar berinteraksi)
