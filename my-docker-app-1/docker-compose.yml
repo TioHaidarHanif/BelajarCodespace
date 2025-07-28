@@ -1,0 +1,37 @@
+version: '3.8' # 1
+
+services: # 2
+
+  php: # 3
+    build: # 4
+      context: . # 5
+      dockerfile: Dockerfile.php # 6
+    volumes: # 7
+      - ./app:/var/www/html # 8
+    expose: # 9
+      - 9000 # 10
+
+  web: # 11
+    image: nginx:latest # 12
+    ports: # 13
+      - "80:80" # 14
+    volumes: # 15
+      - ./app:/var/www/html # 16
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf # 17
+    depends_on: # 18
+      - php # 19
+
+  db: # 20
+    image: mysql:8.0 # 21
+    environment: # 22
+      MYSQL_ROOT_PASSWORD: root_password # 23
+      MYSQL_DATABASE: mydb # 24
+      MYSQL_USER: user # 25
+      MYSQL_PASSWORD: password # 26
+    volumes: # 27
+      - db_data:/var/lib/mysql # 28
+    ports: # 29
+      - "3306:3306" # 30
+
+volumes: # 31
+  db_data: # 32
